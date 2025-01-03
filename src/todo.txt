@@ -1,0 +1,2 @@
+fix image inputting
+stop between steps if some steps fail
