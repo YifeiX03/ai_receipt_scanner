@@ -1,2 +1,8 @@
 fix image inputting
 stop between steps if some steps fail
+figure out how to add a policy somewhere
+watch the vids
+display tokens used
+go through basically everything on the left side of the docs except for training.
+addlogic to thesteps, i think it can be part of the prompts
+add a function at the end that the crew should call with a json of the results in order to simulate askingfor the expense coverage

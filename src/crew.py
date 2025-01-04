@@ -1,10 +1,13 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai_tools import VisionTool, SerperDevTool
+from tools.reporting_tool import ReportingTool
 # from crewai.knowledge.source import CrewDoclingSource
+from pydantic import BaseModel
 
-vision_tool = VisionTool()
+vision_tool = VisionTool(image_path_url="receipt-pics/receipt-1.jpg")
 serper_dev_tool = SerperDevTool()
+reporting_tool = ReportingTool()
 
 # text_source = CrewDoclingSource(
 # 	file_paths=["../knowledge/policy.txt"]
@@ -13,6 +16,11 @@ serper_dev_tool = SerperDevTool()
 	# collection_name="text_knowledge",
 	# sources=[text_source]
 # )
+
+class ExpenseForm(BaseModel):
+	decision: str
+	reason: str
+
 # If you want to run a snippet of code before or after the crew starts, 
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
@@ -50,7 +58,8 @@ class AiReceiptScanner():
 		return Agent(
 			config=self.agents_config['policy_decider'],
 			verbose=True,
-			# knowledge_sources=[text_source]
+			# knowledge_sources=[text_source],
+			tools=[reporting_tool]
 		)
 
 	# To learn more about structured task outputs, 
@@ -72,7 +81,8 @@ class AiReceiptScanner():
 	def decide_policy_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['decide_policy_task'],
-			output_file='expense_report.md'
+			output_json=ExpenseForm,
+			output_file='expense_report.json'
 		)
 
 	@crew
