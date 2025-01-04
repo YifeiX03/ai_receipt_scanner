@@ -1,5 +1,25 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
+from crewai_tools import VisionTool, SerperDevTool
+from tools.reporting_tool import ReportingTool
+# from crewai.knowledge.source import CrewDoclingSource
+from pydantic import BaseModel
+
+vision_tool = VisionTool(image_path_url="receipt-pics/receipt-1.jpg")
+serper_dev_tool = SerperDevTool()
+reporting_tool = ReportingTool()
+
+# text_source = CrewDoclingSource(
+# 	file_paths=["../knowledge/policy.txt"]
+# )
+# knowledge = Knowledge(
+	# collection_name="text_knowledge",
+	# sources=[text_source]
+# )
+
+class ExpenseForm(BaseModel):
+	decision: str
+	reason: str
 
 # If you want to run a snippet of code before or after the crew starts, 
 # you can use the @before_kickoff and @after_kickoff decorators
@@ -18,33 +38,51 @@ class AiReceiptScanner():
 	# If you would like to add tools to your agents, you can learn more about it here:
 	# https://docs.crewai.com/concepts/agents#agent-tools
 	@agent
-	def researcher(self) -> Agent:
+	def scanner(self) -> Agent:
 		return Agent(
-			config=self.agents_config['researcher'],
-			verbose=True
+			config=self.agents_config['scanner'],
+			verbose=True,
+			tools=[vision_tool]
 		)
 
 	@agent
-	def reporting_analyst(self) -> Agent:
+	def merchant_finder(self) -> Agent:
 		return Agent(
-			config=self.agents_config['reporting_analyst'],
-			verbose=True
+			config=self.agents_config['merchant_finder'],
+			verbose=True,
+			tools=[serper_dev_tool]
+		)
+
+	@agent
+	def policy_decider(self) -> Agent:
+		return Agent(
+			config=self.agents_config['policy_decider'],
+			verbose=True,
+			# knowledge_sources=[text_source],
+			tools=[reporting_tool]
 		)
 
 	# To learn more about structured task outputs, 
 	# task dependencies, and task callbacks, check out the documentation:
 	# https://docs.crewai.com/concepts/tasks#overview-of-a-task
 	@task
-	def research_task(self) -> Task:
+	def scanning_task(self) -> Task:
 		return Task(
-			config=self.tasks_config['research_task'],
+			config=self.tasks_config['scanning_task'],
 		)
 
 	@task
-	def reporting_task(self) -> Task:
+	def find_merchant_task(self) -> Task:
 		return Task(
-			config=self.tasks_config['reporting_task'],
-			output_file='report.md'
+			config=self.tasks_config['find_merchant_task'],
+		)
+
+	@task 
+	def decide_policy_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['decide_policy_task'],
+			output_json=ExpenseForm,
+			output_file='expense_report.json'
 		)
 
 	@crew

@@ -1,0 +1,26 @@
+scanning_task:
+  description: >
+    Extract text from the provided image of a receipt.
+    Ensure the extracted text is accurate and complete and ready for further analysis and processing.
+  expected_output: >
+    A complete summary of the receipt including information such as 
+    the amount spent, location, time, the goods or service purchased, and merchant name.
+  agent: scanner
+
+find_merchant_task:
+  description: >
+    Given details about a merchant obtained from a receipt, identify the merchant and obtain details.
+  expected_output: >
+    A complete summary of the merchant's location and what category of service they provide.
+    Along with that, include the details of the receipt that you received as input.
+  agent: merchant_finder
+
+decide_policy_task:
+  description: >
+    Given details about the expense policy, the merchant category, location, time, and purchase amount,
+    decide if the policy covers the expense.
+    Then use the appropriate tool to report the decision.
+  expected_output: >
+    Either approve or reject the expense, with an explanation for how the decision was made.
+  agent: policy_decider
+  output_file: expense_report.json
