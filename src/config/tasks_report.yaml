@@ -1,0 +1,9 @@
+reporting_task:
+  description: >
+    Given a list of expenses,
+    generate a report that summarizes what the expenses were used on, and how the decisions were made.
+  expected_output: >
+    A complete summary of the expenses, what they were used on, and decisions made.
+    Written in markdown format.
+  agent: reporter
+  output_file: expense_report.md

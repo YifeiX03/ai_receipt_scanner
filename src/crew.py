@@ -42,6 +42,7 @@ class AiReceiptScanner():
 		return Agent(
 			config=self.agents_config['scanner'],
 			verbose=True,
+			max_iter=1,
 			tools=[vision_tool]
 		)
 
@@ -59,7 +60,7 @@ class AiReceiptScanner():
 			config=self.agents_config['policy_decider'],
 			verbose=True,
 			# knowledge_sources=[text_source],
-			tools=[reporting_tool]
+			# tools=[reporting_tool]
 		)
 
 	# To learn more about structured task outputs, 

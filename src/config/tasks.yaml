@@ -19,7 +19,6 @@ decide_policy_task:
   description: >
     Given details about the expense policy, the merchant category, location, time, and purchase amount,
     decide if the policy covers the expense.
-    Then use the appropriate tool to report the decision.
   expected_output: >
     Either approve or reject the expense, with an explanation for how the decision was made.
   agent: policy_decider
